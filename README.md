@@ -24,6 +24,6 @@ Prerequisites: Setting up neccesary environment variables
 
 Running the tests: 
 
-python3 manage.py tests audit_logging_monitoring
+`python3 manage.py tests audit_logging_monitoring`
 
 All tests should be successfull
