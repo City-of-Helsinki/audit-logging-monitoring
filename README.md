@@ -8,8 +8,6 @@ Elasticsearch cloud monitoring application. Works by simply adding and getting l
 
 Env variables 
 
-ELASTICSEARCH_HOST
-
 name                      | type         |         default              | description
 ------------------------- | ------------ | -----------------            |-------------------------------------------------
 ELASTICSEARCH_APP_AUDIT_LOG_INDEX | str  | "app_audit_log"              | Index to write to
