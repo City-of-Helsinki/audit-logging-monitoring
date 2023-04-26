@@ -58,7 +58,6 @@ ALLOWED_HOSTS = ['*']
 
 env = environ.Env(
     DEBUG=(bool, False),
-    NEXT_PUBLIC_BACKEND_URL=(str, "https://localhost:8000"),
     ALLOWED_HOSTS=(list, []),
     USE_X_FORWARDED_HOST=(bool, False),
     ELASTICSEARCH_APP_AUDIT_LOG_INDEX=(str, "auditlog-django-test-prod"),
@@ -69,19 +68,10 @@ env = environ.Env(
     ELASTICSEARCH_PASSWORD=(str, ''),
     CLEAR_AUDIT_LOG_ENTRIES=(bool, True),
     ENABLE_SEND_AUDIT_LOG=(bool, True),
-    DB_PREFIX=(str, ""),
     AUDIT_LOG_ORIGIN=(str, ""),
     AUDIT_TABLE_NAME=(str,"audit_logs"),
-    ELASTICSEARCH_SCHEME=(str, "https"),
     DATE_TIME_PARENT_FIELD = (str, "audit_event"),
     DATE_TIME_FIELD = (str, "date_time"),
-    DATABASE_URL = (str, ""),
-    DATABASE_PASSWORD = (str, ""),
-    DB_USE_SSL = (bool, False),
-    SSL_CA = (str, ""),
-    SSL_KEY = (str, ""),
-    SSL_CERT = (str, ""),
-    SSL_CIPHER = (str, "")
 )
 
 ELASTICSEARCH_DSL={
@@ -114,9 +104,6 @@ DATE_TIME_PARENT_FIELD =  env("DATE_TIME_PARENT_FIELD")
 DATE_TIME_FIELD =  env("DATE_TIME_FIELD")
 
 # Sheme for connecting to elastic, for example: "http", or: "https"
-ELASTICSEARCH_SCHEME = env("ELASTICSEARCH_SCHEME")
-
-
 ROOT_URLCONF = 'audit_logging_monitoring.urls'
 
 TEMPLATES = [
@@ -137,16 +124,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'audit_logging_monitoring.wsgi.application'
 
-
-# Database
-# https://docs.djangoproject.com/en/4.1/ref/settings/#databases
-
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': BASE_DIR / 'db.sqlite3',
-#     }
-# }
 
 
 # Password validation

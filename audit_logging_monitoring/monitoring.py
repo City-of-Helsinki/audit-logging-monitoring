@@ -13,6 +13,18 @@ def main(request):
     
     return JsonResponse({'response':"ElasticCloud audit log service OK"})
 
+
+def get_entries(date_now, date_yesterday):
+    s = AuditLogDocument.search().query('range', **{'@timestamp': {'gte': date_yesterday, 'lte': date_now}}).sort('-@timestamp')
+    return s
+
+def add_entry(date_now):
+    url = "https://" + str(settings.ELASTICSEARCH_HOST) + "/" + str(settings.ELASTICSEARCH_APP_AUDIT_DATA_STREAM) + "/_doc/?pretty"
+    data = {"@timestamp": date_now, "message": "Entry added"}
+    headers = {'Content-type': 'application/json', 'Accept': 'text/plain'}
+    response = requests.post(url, data=json.dumps(data), headers=headers, auth=(str(settings.ELASTICSEARCH_USERNAME), str(settings.ELASTICSEARCH_PASSWORD)))
+    return response
+
 def monitor(request):
     date_now = datetime.datetime.now((pytz.timezone('Europe/Helsinki'))).strftime("%Y-%m-%dT%H:%M:%SZ")
     date_yesterday = (datetime.datetime.now((pytz.timezone('Europe/Helsinki'))) - datetime.timedelta(1)).strftime("%Y-%m-%dT%H:%M:%SZ")
@@ -21,12 +33,8 @@ def monitor(request):
 
     try:
 
-        url = "https://" + str(settings.ELASTICSEARCH_HOST) + "/" + str(settings.ELASTICSEARCH_APP_AUDIT_DATA_STREAM) + "/_doc/?pretty"
-        data = {"@timestamp": date_now, "message": "Entry added"}
-        headers = {'Content-type': 'application/json', 'Accept': 'text/plain'}
-        r = requests.post(url, data=json.dumps(data), headers=headers, auth=(str(settings.ELASTICSEARCH_USERNAME), str(settings.ELASTICSEARCH_PASSWORD)))
+        r = add_entry(date_now)
         print(r.text)
-        
         if r.status_code != 201:
             raise Exception(r.text)
 
@@ -36,7 +44,8 @@ def monitor(request):
     
 
     try:
-        s = AuditLogDocument.search().query('range', **{'@timestamp': {'gte': date_yesterday, 'lte': date_now}}).sort('-@timestamp')
+        s = get_entries(date_now, date_yesterday)
+        
     except Exception as err: 
         print("Error getting entry from elasticsearch:", err)
         return JsonResponse(status=500, data={'response':"Error getting entry from ElasticSearch"})
